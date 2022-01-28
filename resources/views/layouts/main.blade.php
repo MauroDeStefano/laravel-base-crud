@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <title>CRUD</title>
 </head>
-<body>
+<body class="container">
 
     @include('partials.header')
 
