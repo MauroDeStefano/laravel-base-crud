@@ -13,7 +13,7 @@
   </div>
   <div class="mb-3">
     <label for="description" class="form-label">Descrizione</label>
-    <textarea type="text" class="form-control" value="{!! $comic->description !!}"  name="description" id="description" placeholder="descrizione"></textarea>
+    <textarea type="text" class="form-control"  name="description" id="description" placeholder="descrizione">{{ $comic->description }}</textarea>
   </div>
   <div class="mb-3">
     <label for="price" class="form-label">Prezzo</label>
