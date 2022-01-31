@@ -15,7 +15,7 @@ class ComicController extends Controller
      */
     public function index()
     {
-        $comics = Comic::all();
+        $comics = Comic::orderBy('id','desc')->get();
        return view('comics.home', compact('comics'));
     }
 
@@ -38,6 +38,10 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate($this->validationData(), $this->validationErrors());
+
+
         $data = $request->all();
 
         $new_comic = new Comic();
@@ -75,6 +79,8 @@ class ComicController extends Controller
      */
     public function edit($id)
     {
+
+
         $comic = Comic::find($id);
         if($comic){
             return view('comics.edit', compact('comic'));
@@ -91,6 +97,8 @@ class ComicController extends Controller
      */
     public function update(Request $request, Comic $comic)
     {
+        $request->validate($this->validationData(), $this->validationErrors());
+
         $data = $request->all();
 
         $data['slug']= Str::slug($data['title']);
@@ -110,6 +118,35 @@ class ComicController extends Controller
     {
         $comic->delete();
 
-        return redirect()->route('comics.index');
+        return redirect()->route('comics.index')->with('deleted', "il fumetto $comic->title è stato eliminato");
+    }
+
+    
+    private function validationData(){
+        return [
+            'title' => "required|max:50|min:2",
+            'img' => 'required|max:256',
+            'price' => 'required|numeric|min:1',
+            'type' => 'required|max:20|min:2',
+            'sale_date' => 'required|date'
+        ];
+    }
+
+    private function validationErrors(){
+        return [
+            'title.required' => 'Il titolo è un campo obbligatorio',
+            'title.max' => 'Il numero di caratteri per il titolo consentito è di :max caratteri',
+            'title.min' => 'Il numero minimo di caratteri per il titolo è di :min caratteri',
+            'type.required' => 'Il tipo di fumetto è un campo obbligatorio',
+            'type.max' => 'Il numero di caratteri per il tipo consentito è di :max caratteri',
+            'type.min' => 'Il numero minimo di caratteri per il tipo è di :min caratteri',
+            'price.required' => 'Il prezzo è obbligatorio',
+            'price.numeric' => 'Il prezzo deve essere un numero',
+            'price.min' => 'Il tempo di cottura deve essere di minmo 1 minuto',
+            'img.required' => "L'immagine è un campo obbligatorio",
+            'img.max' => "L'url dell'immagine non può contenere più di 255 caratteri",
+            'sale_date.required' => 'Inserire una data',
+            'sale_date.date' => 'inserire un formato data corretto'
+        ];
     }
 }
